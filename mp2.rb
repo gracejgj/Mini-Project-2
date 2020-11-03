@@ -1,12 +1,28 @@
 require 'csv'
 
 class Company
-  attr_accessor :name, :email, :department
+  attr_accessor :name, :dept, :time
 
-  def initialize(name, email, department)
+  def initialize(name, dept, time)
     @name =  name
-    @email = email
-    @department = department
+    @dept = dept
+    @time = time
+  end
+
+  def save_to_csv
+    CSV.open('C:/mp2/log2.csv', 'a+') do |row|
+      row << attrs
+    end
+  end
+
+  def self.read_from_csv
+    CSV.foreach('C:/mp2/log2.csv') do |row|
+      puts row.inspect
+    end
+  end
+
+  def attrs
+    [name, dept, time]
   end
 end
 
@@ -16,19 +32,33 @@ end
   3. Update existing employee
   4. Delete existing employee"
 
-  case gets.chomp
+#2.List all the current employee
+#3.Without duplicate the existing employee)
+
+  choice = gets.chomp
+  case choice
     when '1'
-      add
+      puts "Type in your name here:"
+      name = gets.chomp
+      puts "Type in your department here:"
+      dept = gets.chomp
+      #else
+      #  puts "That name already exist!
+        emp = Company.new(name, dept, Time.now)
+        emp.save_to_csv
+        puts "Employee record has been added. #{name} from #{dept} department."
+
     when '2'
-      list
+      Company.read_from_csv
+    else
+      puts "No logs to display"
+
     when '3'
-      update
+
     when '4'
-      delete
-    else puts 'Not a valid input'
+
   end
-
-
+    
 
 =begin
 Mini Porject(2) Requirement:
