@@ -1,22 +1,31 @@
 require 'csv'
 
 class Company
-  attr_accessor :name, :dept
+  attr_accessor :name
 
-  def initialize(name, dept)
+  def initialize(name)
     @name =  name
-    @dept = dept
   end
 
   def save_to_csv
-    CSV.open('C:/mp2/log2.csv', 'a+') do |row|
-	  row << attrs
+    CSV.open('log2.csv', 'a+') do |row|
+      row << attrs
     end
   end
 
   def self.read_from_csv
-    CSV.foreach('log2.csv').uniq do |row|
+    CSV.foreach('log2.csv', 'wb') do |row|
       puts row.inspect
+    end
+  end
+
+  def update_csv
+    rows_array = CSV.read('log2.csv')
+    n_indices = [name] #field that i want to modify
+    rows_array.each_with_index(n_indices[1]) do |row, index|
+      if n_indices.include?(index)
+      rows_array[index][name] = 'modification'
+      end
     end
   end
 
@@ -55,9 +64,9 @@ class Employee
 		puts "Type in your department here:"
 		dept = gets.chomp
 
-		emp = Company.new(name, dept)
+		emp = Company.new(name)
 		emp.save_to_csv
-		puts "Employee record has been added. #{name} from #{dept} department."
+		puts "Employee record has been added. #{name} from department."
   end
 
   def read
@@ -68,18 +77,21 @@ class Employee
 
   def update
     puts "Enter name to update: "
-    name = gets.chomp.to_s
-    n = @name[name]
-
-      if !n
+    names = gets.chomp
+    #logic to search name and update
+      if !names
         puts "no name found"
       else
         puts "Enter the updated data below."
-        puts "Enter "
+        puts "Enter ur new name: "
+        new_name = gets.chomp
 
-
+        n = Company.new(name)
+        n.update_csv
+        puts "Updated."
       end
     end
+
   end
 end
 
